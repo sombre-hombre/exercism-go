@@ -17,10 +17,10 @@ func Flatten(list interface{}) []interface{} {
 		switch el := element.(type) {
 		case []interface{}:
 			result = append(result, Flatten(el)...)
+		case nil:
+			continue
 		default:
-			if element != nil {
-				result = append(result, el)
-			}
+			result = append(result, el)
 		}
 	}
 
