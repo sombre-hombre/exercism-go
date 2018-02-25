@@ -2,26 +2,18 @@ package flatten
 
 // Flatten takes a nested list and returns a single flattened list
 // with all values except nil/null
-func Flatten(list interface{}) []interface{} {
+func Flatten(x interface{}) []interface{} {
 	result := make([]interface{}, 0)
 
-	array, ok := list.([]interface{})
-	if !ok {
-		if list != nil {
-			result = append(result, list)
-		}
-		return result
-	}
-
-	for _, element := range array {
-		switch el := element.(type) {
-		case []interface{}:
+	switch x.(type) {
+	case []interface{}:
+		for _, el := range x.([]interface{}) {
 			result = append(result, Flatten(el)...)
-		case nil:
-			continue
-		default:
-			result = append(result, el)
 		}
+	case nil:
+		return result
+	default:
+		result = append(result, x)
 	}
 
 	return result
