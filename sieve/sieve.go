@@ -19,9 +19,9 @@ func Sieve(limit int) []int {
 		}
 
 		if i == 2 {
-			for j := 2; i*j <= limit; j++ {
-				if _, found := m[j*i]; !found {
-					m[j*i] = struct{}{}
+			for j := i * i; j <= limit; j += i {
+				if _, found := m[j]; !found {
+					m[j] = struct{}{}
 				}
 			}
 			continue
