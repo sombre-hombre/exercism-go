@@ -12,6 +12,7 @@ func Sieve(limit int) []int {
 	}
 
 	m := make(map[int]interface{}, limit-1)
+	step := 2
 
 	for i := 2; i*i <= limit; i++ {
 		if _, found := m[i]; found {
@@ -19,15 +20,10 @@ func Sieve(limit int) []int {
 		}
 
 		if i == 2 {
-			for j := i * i; j <= limit; j += i {
-				if _, found := m[j]; !found {
-					m[j] = struct{}{}
-				}
-			}
-			continue
+			step = 1
 		}
 
-		for j := i * i; j <= limit; j += 2 * i {
+		for j := i * i; j <= limit; j += step * i {
 			if _, found := m[j]; !found {
 				m[j] = struct{}{}
 			}
