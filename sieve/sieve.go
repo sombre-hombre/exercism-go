@@ -2,7 +2,7 @@ package sieve
 
 // goos: windows
 // goarch: amd64
-// BenchmarkSieve-8   	   10000	    115100 ns/op	   66584 B/op	       8 allocs/op
+// BenchmarkSieve-8   	  300000	      4690 ns/op	    9440 B/op	       8 allocs/op
 
 // Sieve of Eratosthenes to find all the primes from 2
 // up to a given number
@@ -11,11 +11,12 @@ func Sieve(limit int) []int {
 		return []int{}
 	}
 
-	m := make(map[int]interface{}, limit-1)
+	m := make([]bool, limit+1)
+	result := make([]int, 0, limit-1)
 	step := 2
 
-	for i := 2; i*i <= limit; i++ {
-		if _, found := m[i]; found {
+	for i := 2; i <= limit; i++ {
+		if m[i] {
 			continue
 		}
 
@@ -24,16 +25,7 @@ func Sieve(limit int) []int {
 		}
 
 		for j := i * i; j <= limit; j += step * i {
-			if _, found := m[j]; !found {
-				m[j] = struct{}{}
-			}
-		}
-	}
-
-	result := make([]int, 0, limit-1)
-	for i := 2; i <= limit; i++ {
-		if _, found := m[i]; found {
-			continue
+			m[j] = true
 		}
 		result = append(result, i)
 	}
