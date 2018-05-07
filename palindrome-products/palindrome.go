@@ -28,13 +28,14 @@ func Products(fmin, fmax int) (Product, Product, error) {
 		return Product{}, Product{}, errors.New("fmin > fmax")
 	}
 
-	var pmin, pmax Product
+	pmin := Product{Product: math.MaxInt64}
+	pmax := Product{Product: math.MinInt64}
 
 	for i := fmin; i <= fmax; i++ {
 		for j := i; j <= fmax; j++ {
 			p := i * j
 			if isPalindrome(p) {
-				if pmin.Product == 0 || pmin.Product >= p {
+				if pmin.Product >= p {
 					pmin.set(p, i, j)
 				}
 				if pmax.Product <= p {
@@ -44,7 +45,7 @@ func Products(fmin, fmax int) (Product, Product, error) {
 		}
 	}
 
-	if pmin.Product == 0 && pmax.Product == 0 {
+	if pmin.Product == math.MaxInt64 {
 		return Product{}, Product{}, errors.New("no palindromes")
 	}
 
@@ -95,19 +96,16 @@ func isPalindrome2(n int) bool {
 	return true
 }
 
-// BenchmarkIsPalindrome-8   	10000000	       166 ns/op	       0 B/op	       0 allocs/op
+// BenchmarkIsPalindrome-8   	10000000	       164 ns/op	       0 B/op	       0 allocs/op
 func isPalindrome(n int) bool {
 	if n < 0 {
 		n = -n
 	}
 
-	reverse := 0
-	copy := n
-
-	for copy != 0 {
-		reverse = reverse*10 + copy%10
-		copy /= 10
+	r := 0
+	for i := n; i > 0; i /= 10 {
+		r = r*10 + i%10
 	}
 
-	return n == reverse
+	return n == r
 }
