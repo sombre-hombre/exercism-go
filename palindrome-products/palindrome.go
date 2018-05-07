@@ -22,7 +22,7 @@ func (p *Product) set(product, n, m int) {
 }
 
 // Products detects palindrome products in a given range.
-// BenchmarkPalindromeProducts-8   	     100	  17855101 ns/op	 3073365 B/op	  409704 allocs/op
+// BenchmarkPalindromeProducts-8   	     200	   5996001 ns/op	    2688 B/op	     158 allocs/op
 func Products(fmin, fmax int) (Product, Product, error) {
 	if fmin > fmax {
 		return Product{}, Product{}, errors.New("fmin > fmax")
@@ -75,7 +75,7 @@ func isPalindrome1(n int) bool {
 }
 
 // BenchmarkIsPalindrome-8   	 3000000	       539 ns/op	      64 B/op	      12 allocs/op
-func isPalindrome(n int) bool {
+func isPalindrome2(n int) bool {
 	s := strconv.Itoa(n)
 	if n < 0 {
 		s = s[1:]
@@ -93,4 +93,21 @@ func isPalindrome(n int) bool {
 	}
 
 	return true
+}
+
+// BenchmarkIsPalindrome-8   	10000000	       166 ns/op	       0 B/op	       0 allocs/op
+func isPalindrome(n int) bool {
+	if n < 0 {
+		n = -n
+	}
+
+	reverse := 0
+	copy := n
+
+	for copy != 0 {
+		reverse = reverse*10 + copy%10
+		copy /= 10
+	}
+
+	return n == reverse
 }
