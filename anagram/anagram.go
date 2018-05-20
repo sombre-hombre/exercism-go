@@ -5,10 +5,12 @@ import (
 )
 
 // Detect finds a list of possible anagrams of the subject from the candidates.
-// BenchmarkDetectAnagrams-8   	   50000	     31640 ns/op	    8032 B/op	     167 allocs/op
+// BenchmarkDetectAnagrams-8   	  100000	     14094 ns/op	    3040 B/op	      75 allocs/op
 func Detect(subject string, candidates []string) []string {
 	var letters = map[rune]int{}
+	var subjectSumm int
 	for _, r := range strings.ToLower(subject) {
+		subjectSumm += int(r)
 		letters[r]++
 	}
 
@@ -18,7 +20,15 @@ func Detect(subject string, candidates []string) []string {
 			continue
 		}
 
-		if isAnagram(copy(letters), c) {
+		var sum int
+		for _, r := range strings.ToLower(c) {
+			sum += int(r)
+		}
+		if sum != subjectSumm {
+			continue
+		}
+
+		if isAnagram(letters, c) {
 			result = append(result, c)
 		}
 	}
@@ -27,6 +37,7 @@ func Detect(subject string, candidates []string) []string {
 }
 
 func isAnagram(letters map[rune]int, candidate string) bool {
+	letters = copy(letters)
 	for _, r := range strings.ToLower(candidate) {
 		if n, ok := letters[r]; !ok || n == 0 {
 			return false
