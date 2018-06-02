@@ -8,72 +8,34 @@ import (
 type Frequency map[string]int
 
 // WordCount returns words frequency map
-// BenchmarkWordCount-8   	  200000	      9139 ns/op	    3920 B/op	      42 allocs/op
-func WordCount1(phrase string) Frequency {
-	f := make(map[string]int)
-
-	words := strings.Split(strings.ToLower(phrase), " ")
-	if len(words) == 1 {
-		words = strings.Split(words[0], ",")
-	}
-	for _, w := range words {
-		w = strings.TrimFunc(w, func(r rune) bool {
-			return (r < 'a' || r > 'z') && (r < '0' || r > '9')
-		})
-
-		if w != "" {
-			f[w]++
-		}
-	}
-
-	return f
-}
-
-// WordCount returns words frequency map
-// BenchmarkWordCount-8   	  200000	      9956 ns/op	    4784 B/op	      63 allocs/op
+// BenchmarkWordCount-8   	  200000	      7776 ns/op	    3072 B/op	      28 allocs/op
 func WordCount(phrase string) Frequency {
-	f := make(map[string]int)
-	for _, word := range split(phrase) {
-		f[word]++
+	f := make(Frequency)
+	phrase = strings.ToLower(phrase)
+
+	s := 0
+	for {
+		e := strings.IndexAny(phrase[s:], " ,")
+		if e == -1 {
+			f.add(trim(phrase[s:]))
+			break
+		}
+
+		f.add(trim(phrase[s : s+e]))
+		s += e + 1
 	}
 
 	return f
 }
 
-func split(s string) (r []string) {
-	s = strings.ToLower(s)
-
-	for i := 0; i < len(s); i++ {
-		if !isWordChar(s[i]) {
-			continue
-		}
-
-		if word := getWord(s[i:]); len(word) > 0 {
-			r = append(r, word)
-			i += len(word)
-		}
-	}
-
-	return r
+func trim(s string) string {
+	return strings.TrimFunc(s, func(r rune) bool {
+		return (r < 'a' || r > 'z') && (r < '0' || r > '9')
+	})
 }
 
-func isWordChar(r byte) bool {
-	return (r >= 'a' && r <= 'z') || (r >= '0' && r <= '9')
-}
-
-func getWord(s string) string {
-	var i int
-	for ; i < len(s); i++ {
-		if isWordChar(s[i]) {
-			continue
-		}
-
-		if s[i] == '\'' && i+1 < len(s) && isWordChar(s[i+1]) {
-			continue
-		}
-
-		break
+func (f *Frequency) add(s string) {
+	if len(s) > 0 {
+		(*f)[s]++
 	}
-
-	return s[:i]
 }

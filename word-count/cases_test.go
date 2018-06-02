@@ -40,6 +40,11 @@ var testCases = []struct {
 		Frequency{"as": 1, "car": 1, "carpet": 1, "java": 1, "javascript": 1},
 	},
 	{
+		"ignore punctuation2",
+		"car: carpet as java: javascript!!, &@$%^&",
+		Frequency{"as": 1, "car": 1, "carpet": 1, "java": 1, "javascript": 1},
+	},
+	{
 		"include numbers",
 		"testing, 1, 2 testing",
 		Frequency{"1": 1, "2": 1, "testing": 2},
