@@ -9,7 +9,7 @@ type Frequency map[string]int
 
 // WordCount returns words frequency map
 // BenchmarkWordCount-8   	  200000	      9139 ns/op	    3920 B/op	      42 allocs/op
-func WordCount(phrase string) Frequency {
+func WordCount1(phrase string) Frequency {
 	f := make(map[string]int)
 
 	words := strings.Split(strings.ToLower(phrase), " ")
@@ -27,4 +27,53 @@ func WordCount(phrase string) Frequency {
 	}
 
 	return f
+}
+
+// WordCount returns words frequency map
+// BenchmarkWordCount-8   	  200000	      9956 ns/op	    4784 B/op	      63 allocs/op
+func WordCount(phrase string) Frequency {
+	f := make(map[string]int)
+	for _, word := range split(phrase) {
+		f[word]++
+	}
+
+	return f
+}
+
+func split(s string) (r []string) {
+	s = strings.ToLower(s)
+
+	for i := 0; i < len(s); i++ {
+		if !isWordChar(s[i]) {
+			continue
+		}
+
+		if word := getWord(s[i:]); len(word) > 0 {
+			r = append(r, word)
+			i += len(word)
+		}
+	}
+
+	return r
+}
+
+func isWordChar(r byte) bool {
+	return (r >= 'a' && r <= 'z') || (r >= '0' && r <= '9')
+}
+
+func getWord(s string) string {
+	var i int
+	for ; i < len(s); i++ {
+		if isWordChar(s[i]) {
+			continue
+		}
+
+		if s[i] == '\'' && i+1 < len(s) && isWordChar(s[i+1]) {
+			continue
+		}
+
+		break
+	}
+
+	return s[:i]
 }
