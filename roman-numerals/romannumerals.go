@@ -11,6 +11,7 @@ var (
 )
 
 // ToRomanNumeral converts from normal numbers to Roman Numerals
+// BenchmarkRomanNumerals-8   	  500000	      3100 ns/op	     272 B/op	      59 allocs/op
 func ToRomanNumeral(n int) (r string, e error) {
 	if n < 1 {
 		return "", errors.New("Number is too small")
